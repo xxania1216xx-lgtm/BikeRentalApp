@@ -1,0 +1,103 @@
+<UserControl x:Class="BikeRentalApp.AdminDashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:BikeRentalApp"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Background="{StaticResource SurfaceBrush}" Padding="20" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+            <Grid>
+                <TextBlock Text="Panel Administratora" FontSize="18" FontWeight="Bold" VerticalAlignment="Center"/>
+                <Button Content="Wyloguj" Command="{Binding LogoutCommand}" HorizontalAlignment="Right" Style="{StaticResource ModernButton}" Background="#FF5F5F" Padding="10,5"/>
+            </Grid>
+        </Border>
+
+        <TabControl Grid.Row="1" Background="Transparent" BorderThickness="0" Margin="10">
+            <TabItem Header="Stacje i Rowery">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Margin="0,0,10,0">
+                        <TextBlock Text="Dodaj Nową Stację" Style="{StaticResource HeaderBlock}" FontSize="18"/>
+                        <TextBlock Text="Nazwa stacji" Style="{StaticResource LabelBlock}"/>
+                        <TextBox Text="{Binding NewStationName, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"/>
+                        <Button Content="Dodaj Stację" Command="{Binding AddStationCommand}" Style="{StaticResource ModernButton}" Margin="0,10,0,0"/>
+                        
+                        <TextBlock Text="Lista stacji" Style="{StaticResource LabelBlock}" Margin="0,20,0,5"/>
+                        <ListBox ItemsSource="{Binding Stations}" DisplayMemberPath="StationName" Height="150"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                        <TextBlock Text="Dodaj Nowy Rower" Style="{StaticResource HeaderBlock}" FontSize="18"/>
+                        <TextBlock Text="Model" Style="{StaticResource LabelBlock}"/>
+                        <TextBox Text="{Binding NewBikeModel, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"/>
+                        
+                        <TextBlock Text="Cena za godzinę" Style="{StaticResource LabelBlock}"/>
+                        <TextBox Text="{Binding NewBikePrice, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"/>
+                        
+                        <TextBlock Text="Stacja początkowa" Style="{StaticResource LabelBlock}"/>
+                        <ComboBox ItemsSource="{Binding Stations}" SelectedItem="{Binding SelectedStation}" DisplayMemberPath="StationName" Padding="10,5"/>
+                        
+                        <Button Content="Dodaj Rower" Command="{Binding AddBikeCommand}" Style="{StaticResource ModernButton}" Margin="0,20,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Użytkownicy">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1.5*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <DataGrid ItemsSource="{Binding AllUsers}" AutoGenerateColumns="False" IsReadOnly="True" Margin="0,0,10,0">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Login" Binding="{Binding Login}" Width="*"/>
+                            <DataGridTextColumn Header="Nazwa" Binding="{Binding UserName}" Width="*"/>
+                            <DataGridCheckBoxColumn Header="Admin" Binding="{Binding IsAdmin}" Width="Auto"/>
+                            <DataGridTextColumn Header="Saldo" Binding="{Binding Balance, StringFormat={}{0:C2}}" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="Dodaj Użytkownika" Style="{StaticResource HeaderBlock}" FontSize="18"/>
+                        
+                        <TextBlock Text="Nazwa użytkownika" Style="{StaticResource LabelBlock}"/>
+                        <TextBox Text="{Binding NewUserName, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"/>
+                        
+                        <TextBlock Text="Login" Style="{StaticResource LabelBlock}"/>
+                        <TextBox Text="{Binding NewUserLogin, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"/>
+                        
+                        <TextBlock Text="Hasło" Style="{StaticResource LabelBlock}"/>
+                        <TextBox Text="{Binding NewUserPassword, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"/>
+                        
+                        <CheckBox Content="Uprawnienia Administratora" IsChecked="{Binding NewUserIsAdmin}" Margin="0,15,0,0"/>
+                        
+                        <Button Content="Dodaj Użytkownika" Command="{Binding AddUserCommand}" Style="{StaticResource ModernButton}" Margin="0,20,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Ustawienia">
+                <StackPanel Margin="20" MaxWidth="400" HorizontalAlignment="Left">
+                    <TextBlock Text="Zmień swoje hasło" Style="{StaticResource HeaderBlock}" FontSize="18"/>
+                    <TextBlock Text="Nowe hasło" Style="{StaticResource LabelBlock}"/>
+                    <TextBox Text="{Binding NewPassword, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"/>
+                    <Button Content="Zmień hasło" Command="{Binding ChangePasswordCommand}" Style="{StaticResource ModernButton}" Margin="0,10,0,0"/>
+                    
+                    <TextBlock Text="{Binding StatusMessage}" Margin="0,20,0,0" Foreground="{StaticResource PrimaryBrush}" FontWeight="Bold"/>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>
