@@ -33,17 +33,13 @@ Nowoczesna aplikacja desktopowa typu **WPF (Windows Presentation Foundation)** s
 
 ## 📦 Instalacja i Uruchomienie
 
-### Wersja deweloperska:
-1. Sklonuj repozytorium.
-2. Otwórz plik `.sln` w Visual Studio 2022.
-3. Uruchom projekt. Baza danych `BikeRental.db` zostanie utworzona automatycznie przy pierwszym starcie wraz z przykładowymi danymi.
+Aplikacja jest gotowa do użycia natychmiast po pobraniu:
 
-### Wersja użytkowa (EXE):
-Aby wygenerować jeden plik `.exe` gotowy do wysłania użytkownikowi, użyj komendy:
-```powershell
-dotnet publish -c Release
-```
-Gotowy plik znajdziesz w: `BikeRentalApp\bin\Release\net10.0-windows\win-x64\publish\`
+1. Przejdź do zakładki **Releases** w tym repozytorium.
+2. Pobierz najnowszą wersję pliku `BikeRentalApp.exe`.
+3. Uruchom pobrany plik. Baza danych zostanie utworzona automatycznie przy pierwszym starcie.
+
+*Wskazówka: Program jest opublikowany jako „Single File EXE”, co oznacza, że nie wymaga instalacji żadnych dodatkowych bibliotek DLL.*
 
 ---
 
