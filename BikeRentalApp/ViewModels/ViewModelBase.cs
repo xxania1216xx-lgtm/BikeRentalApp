@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace BikeRentalApp
+namespace BikeRentalApp.ViewModels
 {
     public class ViewModelBase : INotifyPropertyChanged
     {

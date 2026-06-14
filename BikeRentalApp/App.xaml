@@ -1,10 +1,10 @@
 ﻿<Application x:Class="BikeRentalApp.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:BikeRentalApp"
-             StartupUri="MainWindow.xaml">
+             xmlns:converters="clr-namespace:BikeRentalApp.Converters"
+             StartupUri="Views/MainWindow.xaml">
     <Application.Resources>
-        <local:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
         
         <Color x:Key="PrimaryColor">#0078D4</Color>
         <Color x:Key="BackgroundColor">#F3F3F3</Color>

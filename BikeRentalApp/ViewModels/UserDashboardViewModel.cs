@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 
-namespace BikeRentalApp
+namespace BikeRentalApp.ViewModels
 {
     public class UserDashboardViewModel : ViewModelBase
     {

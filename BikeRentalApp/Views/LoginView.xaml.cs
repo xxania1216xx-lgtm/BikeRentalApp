@@ -1,7 +1,8 @@
 using System.Windows;
 using System.Windows.Controls;
+using BikeRentalApp.ViewModels;
 
-namespace BikeRentalApp
+namespace BikeRentalApp.Views
 {
     public partial class LoginView : UserControl
     {

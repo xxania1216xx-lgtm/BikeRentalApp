@@ -1,7 +1,7 @@
 using BikeRentalApp.Models;
 using System.Linq;
 
-namespace BikeRentalApp
+namespace BikeRentalApp.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {

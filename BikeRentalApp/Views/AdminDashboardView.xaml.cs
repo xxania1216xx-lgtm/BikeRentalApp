@@ -1,6 +1,6 @@
 using System.Windows.Controls;
 
-namespace BikeRentalApp
+namespace BikeRentalApp.Views
 {
     public partial class AdminDashboardView : UserControl
     {

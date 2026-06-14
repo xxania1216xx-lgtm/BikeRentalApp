@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 
-namespace BikeRentalApp
+namespace BikeRentalApp.ViewModels
 {
     public class AdminDashboardViewModel : ViewModelBase
     {
