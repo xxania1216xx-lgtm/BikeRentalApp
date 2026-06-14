@@ -3,100 +3,243 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:BikeRentalApp"
+             xmlns:local="clr-namespace:BikeRentalApp.Views"
+             xmlns:vms="clr-namespace:BikeRentalApp.ViewModels"
              mc:Ignorable="d" 
-             d:DesignHeight="600" d:DesignWidth="800">
+             d:DesignHeight="700" d:DesignWidth="1100" Background="{StaticResource BackgroundBrush}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Border Background="{StaticResource SurfaceBrush}" Padding="20" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+        <!-- Windows 11 style floating header -->
+        <Border Background="{StaticResource SurfaceBrush}" Padding="20,15" Margin="10,10,10,0" CornerRadius="8" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="10" ShadowDepth="2" Color="#20000000" Opacity="0.1"/>
+            </Border.Effect>
             <Grid>
-                <TextBlock Text="Panel Administratora" FontSize="18" FontWeight="Bold" VerticalAlignment="Center"/>
-                <Button Content="Wyloguj" Command="{Binding LogoutCommand}" HorizontalAlignment="Right" Style="{StaticResource ModernButton}" Background="#FF5F5F" Padding="10,5"/>
+                <TextBlock Text="Panel Administratora" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                <Button Content="Wyloguj" Command="{Binding LogoutCommand}" HorizontalAlignment="Right" Style="{StaticResource ModernButton}" Background="#FF5F5F" Padding="15,8"/>
             </Grid>
         </Border>
 
         <TabControl Grid.Row="1" Background="Transparent" BorderThickness="0" Margin="10">
-            <TabItem Header="Stacje i Rowery">
+            <!-- Zarządzanie Stacjami -->
+            <TabItem Header="Stacje">
                 <Grid Margin="10">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <StackPanel Margin="0,0,10,0">
-                        <TextBlock Text="Dodaj Nową Stację" Style="{StaticResource HeaderBlock}" FontSize="18"/>
-                        <TextBlock Text="Nazwa stacji" Style="{StaticResource LabelBlock}"/>
-                        <TextBox Text="{Binding NewStationName, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"/>
-                        <Button Content="Dodaj Stację" Command="{Binding AddStationCommand}" Style="{StaticResource ModernButton}" Margin="0,10,0,0"/>
-                        
-                        <TextBlock Text="Lista stacji" Style="{StaticResource LabelBlock}" Margin="0,20,0,5"/>
-                        <ListBox ItemsSource="{Binding Stations}" DisplayMemberPath="StationName" Height="150"/>
+                    <StackPanel>
+                        <TextBlock Text="Lista Stacji" Style="{StaticResource HeaderBlock}" FontSize="18"/>
+                        <Grid Margin="15,0,15,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="60"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="120"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="ID" Grid.Column="0" FontWeight="SemiBold" Foreground="#666666"/>
+                            <TextBlock Text="Nazwa Stacji" Grid.Column="1" FontWeight="SemiBold" Foreground="#666666"/>
+                            <TextBlock Text="Status" Grid.Column="2" FontWeight="SemiBold" Foreground="#666666" HorizontalAlignment="Center"/>
+                        </Grid>
+                        <ListBox ItemsSource="{Binding Stations}" SelectedItem="{Binding SelectedStationForEdit}" Style="{StaticResource ModernRowList}" Height="450">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="60"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="120"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding StationId}" Grid.Column="0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding StationName}" Grid.Column="1" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                        <Border Grid.Column="2" Padding="12,4" CornerRadius="4" HorizontalAlignment="Center" Background="#E8F5E9">
+                                            <TextBlock Text="{Binding StationIsActive, ConverterParameter='Aktywna|Nieaktywna', Converter={StaticResource NullToVisibilityConverter}, FallbackValue='Aktywna'}" Foreground="#2E7D32" FontSize="11" FontWeight="Bold"/>
+                                        </Border>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
                     </StackPanel>
 
-                    <StackPanel Grid.Column="1" Margin="10,0,0,0">
-                        <TextBlock Text="Dodaj Nowy Rower" Style="{StaticResource HeaderBlock}" FontSize="18"/>
-                        <TextBlock Text="Model" Style="{StaticResource LabelBlock}"/>
-                        <TextBox Text="{Binding NewBikeModel, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"/>
-                        
-                        <TextBlock Text="Cena za godzinę" Style="{StaticResource LabelBlock}"/>
-                        <TextBox Text="{Binding NewBikePrice, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"/>
-                        
-                        <TextBlock Text="Stacja początkowa" Style="{StaticResource LabelBlock}"/>
-                        <ComboBox ItemsSource="{Binding Stations}" SelectedItem="{Binding SelectedStation}" DisplayMemberPath="StationName" Padding="10,5"/>
-                        
-                        <Button Content="Dodaj Rower" Command="{Binding AddBikeCommand}" Style="{StaticResource ModernButton}" Margin="0,20,0,0"/>
+                    <StackPanel Grid.Column="1" Margin="20,0,0,0">
+                        <Border Background="White" CornerRadius="12" Padding="25" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                            <StackPanel>
+                                <TextBlock Text="Zarządzaj Stacją" Style="{StaticResource HeaderBlock}" FontSize="20"/>
+                                <TextBlock Text="Nazwa" Style="{StaticResource LabelBlock}"/>
+                                <TextBox Text="{Binding SelectedStationForEdit.StationName, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"/>
+                                
+                                <CheckBox Content="Stacja Aktywna" IsChecked="{Binding SelectedStationForEdit.StationIsActive}" Margin="0,15,0,0"/>
+
+                                <UniformGrid Columns="2" Margin="0,20,0,0">
+                                    <Button Content="Zapisz zmiany" Command="{Binding UpdateStationCommand}" Style="{StaticResource ModernButton}" Margin="0,0,5,0"/>
+                                    <Button Content="Usuń" Command="{Binding DeleteStationCommand}" Style="{StaticResource ModernButton}" Background="#FF5F5F" Margin="5,0,0,0"/>
+                                </UniformGrid>
+                                
+                                <Separator Margin="0,25"/>
+                                <TextBlock Text="Dodaj nową stację" FontWeight="Bold" Margin="0,0,0,10"/>
+                                <TextBox Text="{Binding NewStationName, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"/>
+                                <Button Content="Dodaj stację" Command="{Binding AddStationCommand}" Style="{StaticResource ModernButton}" Margin="0,10,0,0"/>
+                            </StackPanel>
+                        </Border>
                     </StackPanel>
                 </Grid>
             </TabItem>
 
-            <TabItem Header="Użytkownicy">
+            <!-- Zarządzanie Rowerami -->
+            <TabItem Header="Rowery">
                 <Grid Margin="10">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1.5*"/>
+                        <ColumnDefinition Width="2.5*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <DataGrid ItemsSource="{Binding AllUsers}" AutoGenerateColumns="False" IsReadOnly="True" Margin="0,0,10,0">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Login" Binding="{Binding Login}" Width="*"/>
-                            <DataGridTextColumn Header="Nazwa" Binding="{Binding UserName}" Width="*"/>
-                            <DataGridCheckBoxColumn Header="Admin" Binding="{Binding IsAdmin}" Width="Auto"/>
-                            <DataGridTextColumn Header="Saldo" Binding="{Binding Balance, StringFormat={}{0:C2}}" Width="*"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                    <StackPanel>
+                        <TextBlock Text="Flota Rowerowa" Style="{StaticResource HeaderBlock}" FontSize="18"/>
+                        <Grid Margin="15,0,15,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="150"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Model" Grid.Column="0" FontWeight="SemiBold" Foreground="#666666"/>
+                            <TextBlock Text="Cena/h" Grid.Column="1" FontWeight="SemiBold" Foreground="#666666" HorizontalAlignment="Center"/>
+                            <TextBlock Text="Status" Grid.Column="2" FontWeight="SemiBold" Foreground="#666666" HorizontalAlignment="Center"/>
+                            <TextBlock Text="Lokalizacja" Grid.Column="3" FontWeight="SemiBold" Foreground="#666666" HorizontalAlignment="Right"/>
+                        </Grid>
+                        <ListBox ItemsSource="{Binding AllBikes}" SelectedItem="{Binding SelectedBikeForEdit}" Style="{StaticResource ModernRowList}" Height="450">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="100"/>
+                                            <ColumnDefinition Width="120"/>
+                                            <ColumnDefinition Width="150"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding Model}" Grid.Column="0" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding PricePerHour, StringFormat='{}{0:N2} zł'}" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="{Binding Status}" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="{Binding CurrentStation.StationName, FallbackValue='W trasie'}" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Right" Foreground="#666666"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </StackPanel>
 
-                    <StackPanel Grid.Column="1">
-                        <TextBlock Text="Dodaj Użytkownika" Style="{StaticResource HeaderBlock}" FontSize="18"/>
-                        
-                        <TextBlock Text="Nazwa użytkownika" Style="{StaticResource LabelBlock}"/>
-                        <TextBox Text="{Binding NewUserName, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"/>
-                        
-                        <TextBlock Text="Login" Style="{StaticResource LabelBlock}"/>
-                        <TextBox Text="{Binding NewUserLogin, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"/>
-                        
-                        <TextBlock Text="Hasło" Style="{StaticResource LabelBlock}"/>
-                        <TextBox Text="{Binding NewUserPassword, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"/>
-                        
-                        <CheckBox Content="Uprawnienia Administratora" IsChecked="{Binding NewUserIsAdmin}" Margin="0,15,0,0"/>
-                        
-                        <Button Content="Dodaj Użytkownika" Command="{Binding AddUserCommand}" Style="{StaticResource ModernButton}" Margin="0,20,0,0"/>
+                    <StackPanel Grid.Column="1" Margin="20,0,0,0">
+                        <Border Background="White" CornerRadius="12" Padding="25" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                            <StackPanel>
+                                <TextBlock Text="Edycja Roweru" Style="{StaticResource HeaderBlock}" FontSize="20"/>
+                                <TextBlock Text="Model" Style="{StaticResource LabelBlock}"/>
+                                <TextBox Text="{Binding SelectedBikeForEdit.Model, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"/>
+                                <TextBlock Text="Cena (zł/h)" Style="{StaticResource LabelBlock}"/>
+                                <TextBox Text="{Binding SelectedBikeForEdit.PricePerHour, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"/>
+                                
+                                <TextBlock Text="Przenieś na stację" Style="{StaticResource LabelBlock}"/>
+                                <ComboBox ItemsSource="{Binding Stations}" SelectedValue="{Binding SelectedBikeStationId}" SelectedValuePath="StationId" DisplayMemberPath="StationName" Padding="10,5"/>
+
+                                <UniformGrid Columns="2" Margin="0,20,0,0">
+                                    <Button Content="Zaktualizuj" Command="{Binding UpdateBikeCommand}" Style="{StaticResource ModernButton}" Margin="0,0,5,0"/>
+                                    <Button Content="Usuń" Command="{Binding DeleteBikeCommand}" Style="{StaticResource ModernButton}" Background="#FF5F5F" Margin="5,0,0,0"/>
+                                </UniformGrid>
+
+                                <Separator Margin="0,25"/>
+                                <TextBlock Text="Nowy Rower" FontWeight="Bold" Margin="0,0,0,10"/>
+                                <TextBlock Text="Model" Style="{StaticResource LabelBlock}"/>
+                                <TextBox Text="{Binding NewBikeModel, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"/>
+                                <TextBlock Text="Cena (zł/h)" Style="{StaticResource LabelBlock}"/>
+                                <TextBox Text="{Binding NewBikePrice, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"/>
+                                <TextBlock Text="Stacja startowa" Style="{StaticResource LabelBlock}"/>
+                                <ComboBox ItemsSource="{Binding Stations}" SelectedItem="{Binding TargetStation}" DisplayMemberPath="StationName" Padding="10,5"/>
+                                <Button Content="Dodaj Rower" Command="{Binding AddBikeCommand}" Style="{StaticResource ModernButton}" Margin="0,15,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <!-- Zarządzanie Użytkownikami -->
+            <TabItem Header="Użytkownicy">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel>
+                        <TextBlock Text="Baza Użytkowników" Style="{StaticResource HeaderBlock}" FontSize="18"/>
+                        <Grid Margin="15,0,15,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="120"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Użytkownik (Login)" Grid.Column="0" FontWeight="SemiBold" Foreground="#666666"/>
+                            <TextBlock Text="Nazwa" Grid.Column="1" FontWeight="SemiBold" Foreground="#666666"/>
+                            <TextBlock Text="Rola" Grid.Column="2" FontWeight="SemiBold" Foreground="#666666" HorizontalAlignment="Center"/>
+                            <TextBlock Text="Saldo" Grid.Column="3" FontWeight="SemiBold" Foreground="#666666" HorizontalAlignment="Right"/>
+                        </Grid>
+                        <ListBox ItemsSource="{Binding AllUsers}" SelectedItem="{Binding SelectedUserForEdit}" Style="{StaticResource ModernRowList}" Height="450">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="120"/>
+                                            <ColumnDefinition Width="100"/>
+                                            <ColumnDefinition Width="120"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding Login}" Grid.Column="0" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding UserName}" Grid.Column="1" VerticalAlignment="Center"/>
+                                        <Border Grid.Column="2" Padding="8,2" CornerRadius="4" HorizontalAlignment="Center" Background="{Binding IsAdmin, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='#E3F2FD|#F5F5F5'}">
+                                            <TextBlock Text="{Binding IsAdmin, ConverterParameter='Admin|User', Converter={StaticResource NullToVisibilityConverter}, FallbackValue='User'}" FontSize="11" FontWeight="Bold"/>
+                                        </Border>
+                                        <TextBlock Text="{Binding Balance, StringFormat='{}{0:N2} zł'}" Grid.Column="3" FontWeight="Bold" Foreground="{StaticResource PrimaryBrush}" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Margin="20,0,0,0">
+                        <Border Background="White" CornerRadius="12" Padding="25" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                            <StackPanel>
+                                <TextBlock Text="Profil Użytkownika" Style="{StaticResource HeaderBlock}" FontSize="20"/>
+                                <TextBlock Text="Nazwa" Style="{StaticResource LabelBlock}"/>
+                                <TextBox Text="{Binding SelectedUserForEdit.UserName, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"/>
+                                <TextBlock Text="Login" Style="{StaticResource LabelBlock}"/>
+                                <TextBox Text="{Binding SelectedUserForEdit.Login, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"/>
+                                <TextBlock Text="Saldo (zł)" Style="{StaticResource LabelBlock}"/>
+                                <TextBox Text="{Binding SelectedUserForEdit.Balance, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"/>
+                                <CheckBox Content="Uprawnienia administratora" IsChecked="{Binding SelectedUserForEdit.IsAdmin}" Margin="0,15"/>
+
+                                <UniformGrid Columns="2">
+                                    <Button Content="Zaktualizuj" Command="{Binding UpdateUserCommand}" Style="{StaticResource ModernButton}" Margin="0,0,5,0"/>
+                                    <Button Content="Usuń konto" Command="{Binding DeleteUserCommand}" Style="{StaticResource ModernButton}" Background="#FF5F5F" Margin="5,0,0,0"/>
+                                </UniformGrid>
+                                <TextBlock Text="{Binding StatusMessage}" Margin="0,20,0,0" Foreground="{StaticResource PrimaryBrush}" FontWeight="Bold" TextWrapping="Wrap" TextAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
                     </StackPanel>
                 </Grid>
             </TabItem>
 
             <TabItem Header="Ustawienia">
-                <StackPanel Margin="20" MaxWidth="400" HorizontalAlignment="Left">
-                    <TextBlock Text="Zmień swoje hasło" Style="{StaticResource HeaderBlock}" FontSize="18"/>
-                    <TextBlock Text="Nowe hasło" Style="{StaticResource LabelBlock}"/>
-                    <TextBox Text="{Binding NewPassword, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}"/>
-                    <Button Content="Zmień hasło" Command="{Binding ChangePasswordCommand}" Style="{StaticResource ModernButton}" Margin="0,10,0,0"/>
-                    
-                    <TextBlock Text="{Binding StatusMessage}" Margin="0,20,0,0" Foreground="{StaticResource PrimaryBrush}" FontWeight="Bold"/>
-                </StackPanel>
+                <Border Background="White" CornerRadius="12" Padding="30" MaxWidth="500" HorizontalAlignment="Center" VerticalAlignment="Center" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                    <StackPanel>
+                        <TextBlock Text="Ustawienia Konta" Style="{StaticResource HeaderBlock}" FontSize="22" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Zmień swoje hasło administratora" Style="{StaticResource LabelBlock}" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+                        <TextBlock Text="Nowe hasło" Style="{StaticResource LabelBlock}"/>
+                        <TextBox Text="{Binding NewPassword, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBox}" FontSize="16"/>
+                        <Button Content="Zapisz nowe hasło" Command="{Binding ChangePasswordCommand}" Style="{StaticResource ModernButton}" Margin="0,20,0,0"/>
+                    </StackPanel>
+                </Border>
             </TabItem>
         </TabControl>
     </Grid>

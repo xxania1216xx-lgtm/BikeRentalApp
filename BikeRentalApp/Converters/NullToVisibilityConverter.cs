@@ -9,7 +9,18 @@ namespace BikeRentalApp.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value == null ? Visibility.Collapsed : Visibility.Visible;
+            if (parameter is string paramString && paramString.Contains("|"))
+            {
+                var options = paramString.Split('|');
+                if (value is bool b) return b ? options[0] : options[1];
+                if (value == null) return options[1];
+                return options[0];
+            }
+
+            if (targetType == typeof(Visibility))
+                return value == null ? Visibility.Collapsed : Visibility.Visible;
+
+            return value;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
